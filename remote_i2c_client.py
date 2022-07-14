@@ -14,10 +14,16 @@ bus.connect()
 # Qwiic Quad Relayのアドレス 0x6d 
 # Qwiic Buttonのアドレス　
 addr = 0x6d
-on_value = 0x0b
-off_value = 0x0a
+on_value = 0x0b     # All on
+off_value = 0x0a    # All off
+
+# アドレス 0x6d に1を書き込むと1番リレーの ON/OFF 状態が入れ替わります入れ替わり(toggle)ます．
+# 2を書き込むと1番リレーの ON/OFF 状態が入れ替わります入れ替わります．
+# 3，４を書きこんだ場合も同様です．
 # toggle1_value =  0x01
-# goggle2_value =  0x02
+# toggle2_value =  0x02
+# toggle3_value =  0x03
+# toggle4_value =  0x04
 
 #ret = bus.read_byte_data(addr)
 

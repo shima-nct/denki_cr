@@ -67,7 +67,7 @@ while : ; do python remote_i2c_client.py ; done
 ## 各デバイスのI2Cアドレス
 
 * Qwiic Quad Relay (pseudo device consists of ATtiny84): 0x6d
-* Qwiic Button: 0x64
+* Qwiic Button: 0x6f
 * Auto pHAT Servo Controller (PCA9685): 0x40
 * Auto pHAT Motor Driver (PSoC4245 and DRV8835): 0x5d
 * Auto pHAT Encoder Reader (pseudo device consists of ATtiny84): 0x73

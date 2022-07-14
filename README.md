@@ -103,12 +103,24 @@ pi@raspberrypi:~ $
 
 ## Raspberry Piでコマンドを用いて書き込み，読み込みを行う方法
 Raspberry Pi OSのコマンド `i2cset` と `i2cget` を用いることで Python スクリプトなどを用いずともI2Cバスにデータを送ること、読み取ることができます．
-書き込みの例
+書き込みの例（Qwiic Quad Relay の全リレーを ON にする）
 ```
-i2pset -y 1 0x6d 0x0b
+pi@raspberrypi:~ $ i2cset -y 1 0x6d 0x0b
+pi@raspberrypi:~ $
 ```
-読み込みの例
+書き込みの例（Qwiic Quad Relay の全リレーを OFF にする）
 ```
-i2cget -y 1 0x6d
+pi@raspberrypi:~ $ i2cset -y 1 0x6d 0x0a
+pi@raspberrypi:~ $
+```
+書き込みの例（Qwiic Quad Relay のリレー1を ON/OFF の状態を反転する）
+```
+pi@raspberrypi:~ $ i2cset -y 1 0x6d 0x01
+pi@raspberrypi:~ $
+```
+読み込みの例（Qwiic Button のステータスを読み取る．戻り値の3ビット目がボタンのステータス．デバイスのアドレス0x6fの後の0x03はデータアドレス．詳細はi2cgetのマニュアルと[qwiic_button.py](https://github.com/sparkfun/Qwiic_Button_Py/blob/main/qwiic_button.py#:~:text=self.is_pressed%20%3D%20int(button_status)%20%26%20~(0xFB))を参照してください．）
+```
+pi@raspberrypi:~ $ i2cget -y 1 0x6f 0x03
+0x03
 ```
 

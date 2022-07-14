@@ -1,13 +1,37 @@
 # denki_cr
 
 ## [remote-i2c] package について
-[remote-i2c] は Raspberry Pi の I2C を他の端末から制御することができます．
-Raspberry Pi でサーバースクリプトを動かしてください．
-他の端末のクライアントスクリプトがサーバーに対して I2C のアドレスとデータを送り，サーバーは受け取ったアドレス，データを I2C バスに送ります．
+[remote-i2c] は Raspberry Pi の I2C を他の端末から制御することを可能とする python ライブラリパッケージです．
+Raspberry Pi でサーバースクリプトを動かしておけば他の端末から Python スクリプトを用いて Raspberry Pi の I2C を操作できます．
+
+remote-i2c のプロトコルは TCP を用いています．デフォルトの待受ポートは 5446 です。アドレスとデータをそのままバイナリのバイト列で送る至極簡単なプロトコルです。サーバーは受け取ったアドレス，データを I2C バスに送ります．
 アドレスを指定してデータを読み込むことができます．
+
+remote-i2c にはアクセス制限などの制御機構はありません．
 
 
 [remote-i2c]: https://pypi.org/project/remote-i2c/
+
+## [remote-i2c] package のインストール
+### Rasberry Pi OS へのインストール
+
+remote-i2c のインストール
+```
+sudo pip install remote-i2c
+```
+
+### Kali Linux へのインストール
+本来は pip コマンドによるインストールで済むはずなのですが，エラーが生じてしまいます．このエラーは Kali Linux のアップデートで回避できます．
+
+Kali Linux のアップデート
+ ```
+ sudo apt update
+ sudo apt -y upgrade
+ ```
+remote-i2c のインストール
+```
+sudo pip install remote-i2c smbus2
+```
 
 ## サンプルスクリプト
 
@@ -17,13 +41,32 @@ remote-i2c のドキュメントでも説明されているようにこのスク
 python -m remote_i2c
 ```
 
+`remote_i2c_server.py` を用いる場合
+```
+python remote_i2c_server.py
+```
+
 ### `remote_i2c_client.py`
 remote-i2c のドキュメントに掲載してあるサンプルだとうまく動きません．これはスクリプト内で用いられているメソッド `bus.write_byte_data(addr, reg, value)` がSMBus用だからです．`remote_i2c_client.py` ではI2C用の書き込みメソッドは `bus.write_byte(addr, value)` を用いています．
 
+サーバーの IP アドレスを `remote_i2c_host` に与えてください．
+
+このスクリプトは Qwiic Quad Relay の全リレーの ON にし，1秒後に OFF にします．
+この動作や他のデバイスに対応する場合はアドレスと書き込む値をデバイスの動作に合わせて変更してください．
+
+スクリプトを一回だけ実行する方法
+```
+python remote_i2c_client.py
+```
+
+スクリプトを繰り返し実行したい場合は，スクリプト内で for などの繰り返し文を用いるか、以下のように Shell 言語の while コマンドを用います．
+```
+while : ; do python remote_i2c_client.py ; done
+```
 
 ## 各デバイスのI2Cアドレス
 
-* Qwiic Quad Relay: 0x6d
+* Qwiic Quad Relay (pseudo device consists of ATtiny84): 0x6d
 * Qwiic Button: 0x64
 * Auto pHAT Servo Controller (PCA9685): 0x40
 * Auto pHAT Motor Driver (PSoC4245 and DRV8835): 0x5d
@@ -57,3 +100,15 @@ pi@raspberrypi:~ $ sudo i2cdetect -y 1
 70: 70 -- -- 73 -- -- -- --
 pi@raspberrypi:~ $
 ```
+
+## Raspberry Piでコマンドを用いて書き込み，読み込みを行う方法
+Raspberry Pi OSのコマンド `i2cset` と `i2cget` を用いることで Python スクリプトなどを用いずともI2Cバスにデータを送ること、読み取ることができます．
+書き込みの例
+```
+i2pset -y 1 0x6d 0x0b
+```
+読み込みの例
+```
+i2cget -y 1 0x6d
+```
+

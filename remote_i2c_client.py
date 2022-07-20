@@ -1,13 +1,22 @@
 #!/usr/bin/env python3
 
 # Import the RemoteI2CClient class
+import argparse
 from remote_i2c import RemoteI2CClient
 import time
 
+# コマンドラインオプションの処理
+parser = argparse.ArgumentParser()
+parser.add_argument("--remote-host", type=str, default="0.0.0.0")
+parser.add_argument("--remote-port", type=int, default=5446)
+args = parser.parse_args()
+
 # Connect to the I2C Host (see docstring for additional args)
 # remote_i2c_server.py を動かしている Raspberry PiのIPアドレスを指定
-remote_i2c_host = '10.1.101.197'
-bus = RemoteI2CClient(remote_i2c_host)
+# コマンドラインオプションでリモートホストアドレスを指定しない場合は remote_i2c_host に直接代入するように書き換えてください．
+remote_i2c_host = args.remote_host
+remote_port = args.remote_port
+bus = RemoteI2CClient(remote_i2c_host, remote_port)
 bus.connect()
 
 # Perform I2C operations

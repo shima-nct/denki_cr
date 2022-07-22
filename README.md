@@ -9,15 +9,18 @@ remote-i2c のプロトコルは TCP を用いています．デフォルトの�
 
 remote-i2c にはアクセス制限などの制御機構はありません．
 
+なお remote-i2c バージョン 0.0.9 には `_read_byte_data()' メソッドがエラーになることと smbus2 パッケージへの依存情報がかけているバグがあります．これらのバグを修正したバージョンを[このレポジトリ](https://github.com/shima-nct/remote-i2c/tree/fix_lack_of_smbus2_dependency_and_write_word)に用意しておきました．
 
 [remote-i2c]: https://pypi.org/project/remote-i2c/
 
 ## [remote-i2c] package のインストール
 ### Rasberry Pi OS へのインストール
 
+remote-i2c バージョン 0.0.9 にはバグがあるので[このレポジトリ](https://github.com/shima-nct/remote-i2c/tree/fix_lack_of_smbus2_dependency_and_write_word)にある非公式パッケージをインストールします．
+
 remote-i2c のインストール
 ```
-sudo pip install remote-i2c
+sudo pip install https://github.com/shima-nct/remote-i2c/releases/download/v0.0.9_fix_write_word/remote_i2c-0.0.9-py3-none-any.whl
 ```
 
 ### Kali Linux へのインストール
@@ -49,19 +52,23 @@ python remote_i2c_server.py
 ### `remote_i2c_client.py`
 remote-i2c のドキュメントに掲載してあるサンプルだとうまく動きません．これはスクリプト内で用いられているメソッド `bus.write_byte_data(addr, reg, value)` がSMBus用だからです．`remote_i2c_client.py` ではI2C用の書き込みメソッドは `bus.write_byte(addr, value)` を用いています．
 
-サーバーの IP アドレスを `remote_i2c_host` に与えてください．
+サーバーの IP アドレスを変数 `remote_i2c_host` に与えてください．コードを直接書き換えるか，コマンドラインオプション `--remote-host` で与えてください．以下の例はサーバーのIPアドレスが`10.1.109.123`の場合です．
+
+```
+python remote_i2c_client.py --remote-host 10.1.109.123
+```
 
 このスクリプトは Qwiic Quad Relay の全リレーの ON にし，1秒後に OFF にします．
 この動作や他のデバイスに対応する場合はアドレスと書き込む値をデバイスの動作に合わせて変更してください．
 
 スクリプトを一回だけ実行する方法
 ```
-python remote_i2c_client.py
+python remote_i2c_client.py --remote-host 10.1.109.123
 ```
 
 スクリプトを繰り返し実行したい場合は，スクリプト内で for などの繰り返し文を用いるか、以下のように Shell 言語の while コマンドを用います．
 ```
-while : ; do python remote_i2c_client.py ; done
+while : ; do python remote_i2c_client.py --remote-host 10.1.109.123 ; done
 ```
 
 ## 各デバイスのI2Cアドレス

@@ -98,6 +98,10 @@ Qwiic Buttonの押された瞬間，離した瞬間を表示します．
 python ex_button_read.py --remote-host 10.1.109.123
 ```
 
+Raspberry Piの`/boot/config.txt`  の最後に以下の一行を加えて再起動することが必要です．
+```
+dtparam=i2c_baudrate=50000
+```
 
 ## 各デバイスのI2Cアドレス
 

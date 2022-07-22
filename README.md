@@ -72,7 +72,10 @@ while : ; do python remote_i2c_client.py --remote-host 10.1.109.123 ; done
 ```
 
 ### `ex_pca9685_control.py`
-SparkFun Auto PHAT によるサーボーモーター制御は搭載されている[NXP PWM LED controller PCA9685]で行っています．このICに用意されているレジスタに値を書き込みPWMの周波数，デューティー比などを制御しています．
+サーボモータの回転角度は指令パルスのデューティ比で制御します．
+サーボモーター[ASV-15-A]におけるパルス信号の仕様はリンク先の商品情報で確認してください．
+
+SparkFun Auto PHAT のサーボーモーター制御は搭載されている[NXP PWM LED controller PCA9685]で行っています．このICに用意されているレジスタに値を書き込みPWMの周波数，デューティー比などを制御しています．
  `ex_pca9685_control.py` はこのレジスタを操作して回転角を5秒間隔で0°，45°，90°に変化させています．
  スクリプトのコメントに当該レジスタについて記載されている[PCA9685のデータシート]のページへのリンクを示しておきました．
  より複雑な動作をさせる場合はこれらの情報を参考にしてください．
@@ -85,7 +88,7 @@ python ex_pca9685_control.py --remote-host 10.1.109.123
 
 [NXP PWM LED controller PCA9685]: https://www.nxp.com/products/power-management/lighting-driver-and-controller-ics/ic-led-controllers/16-channel-12-bit-pwm-fm-plus-ic-bus-led-controller:PCA9685
 [PCA9685のデータシート]: https://www.nxp.com/docs/en/data-sheet/PCA9685.pdf
-[ＲＣサーボ ASV-15]: http://www.robotsfx.com/robot/ASV-15.html
+[ASV-15-A]: http://www.robotsfx.com/robot/ASV-15.html
 
 ## 各デバイスのI2Cアドレス
 

@@ -90,6 +90,15 @@ python ex_pca9685_control.py --remote-host 10.1.109.123
 [PCA9685のデータシート]: https://www.nxp.com/docs/en/data-sheet/PCA9685.pdf
 [ASV-15-A]: http://www.robotsfx.com/robot/ASV-15.html
 
+### `ex_button_read.py`
+Qwiic Buttonの押された瞬間，離した瞬間を表示します．
+
+スクリプトを実行する方法
+```
+python ex_button_read.py --remote-host 10.1.109.123
+```
+
+
 ## 各デバイスのI2Cアドレス
 
 * Qwiic Quad Relay (pseudo device consists of ATtiny84): 0x6d

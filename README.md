@@ -103,6 +103,31 @@ Raspberry Piの`/boot/config.txt`  の最後に以下の一行を加えて再起
 dtparam=i2c_baudrate=50000
 ```
 
+### `remote_auto_phat_server.py`
+
+Auto pHAT のモータードライバーをリモートからコントロールするためのサーバースクリプトです．
+[SparkFun Qwiic Python package]が必要です．
+Socketを用いて作成した単純なTCP/IPサーバーです．
+モーター制御の3つのパラメーター，モーター番号(0,1)，方向(0,1)，回転速度(0-255)の連想配列を受け取り，これらの値を`myMotor.set_drive(<モーター番号>, <方向>,  <速度>)`でモータードライバのメソッドに与えています．
+
+スクリプトを実行する方法
+```
+python remote_auto_phat_server.py --port 3354
+```
+
+### `remote_auto_phat_client.py`
+
+Auto pHAT のモータードライバーをリモートからコントロールします．
+[Auto pHATのデモスクリプト]の様のモーターの速度を20-255の間で上下させています．
+
+スクリプトを実行する方法．`--remote-host`オプションでサーバーのIPアドレスを指定します．
+```
+python remote_auto_phat_client.py --remote-host 10.1.101.12  --remote-port 3354
+```
+
+[SparkFun Qwiic Python package]: https://learn.sparkfun.com/tutorials/sparkfun-auto-phat-hookup-guide/all#software-configuration
+[Auto pHATのデモスクリプト]: https://learn.sparkfun.com/tutorials/sparkfun-auto-phat-hookup-guide/all#python-package-examples
+
 ## 各デバイスのI2Cアドレス
 
 * Qwiic Quad Relay (pseudo device consists of ATtiny84): 0x6d

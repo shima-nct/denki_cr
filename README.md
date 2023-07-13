@@ -118,7 +118,7 @@ python remote_auto_phat_server.py --port 3354
 ### `remote_auto_phat_client.py`
 
 Auto pHAT のモータードライバーをリモートからコントロールします．
-[Auto pHATのデモスクリプト]の様のモーターの速度を20-255の間で上下させています．
+[Auto pHATのデモスクリプト]の様にモーターの速度を20-255の間で上下させています．
 
 スクリプトを実行する方法．`--remote-host`オプションでサーバーのIPアドレスを指定します．
 ```

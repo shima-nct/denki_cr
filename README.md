@@ -109,6 +109,7 @@ Auto pHAT のモータードライバーをリモートからコントロール�
 [SparkFun Qwiic Python package]が必要です．
 Socketを用いて作成した単純なTCP/IPサーバーです．
 モーター制御の3つのパラメーター，モーター番号(0,1)，方向(0,1)，回転速度(0-255)の連想配列を受け取り，これらの値を`myMotor.set_drive(<モーター番号>, <方向>,  <速度>)`でモータードライバのメソッドに与えています．
+このクライアントからサーバーへの通信は連想配列を[JSON]書式の文字列に変換して送っているのでWiresharkでキャプチャすれば簡単に通信内容を解釈することができます．
 
 スクリプトを実行する方法
 ```
@@ -127,6 +128,7 @@ python remote_auto_phat_client.py --remote-host 10.1.101.12  --remote-port 3354
 
 [SparkFun Qwiic Python package]: https://learn.sparkfun.com/tutorials/sparkfun-auto-phat-hookup-guide/all#software-configuration
 [Auto pHATのデモスクリプト]: https://learn.sparkfun.com/tutorials/sparkfun-auto-phat-hookup-guide/all#python-package-examples
+[JSON]: https://ja.wikipedia.org/wiki/JavaScript_Object_Notation
 
 ## 各デバイスのI2Cアドレス
 

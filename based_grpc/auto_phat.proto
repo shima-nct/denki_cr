@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+message Motor {
+    int32 motor = 1;
+    int32 dir = 2;
+    int32 speed = 3;
+}
+
+message Servo {
+    int32 channel = 1;
+    int32 degree = 2;
+}
+
+message Response {
+    bool error = 1;
+}
+
+service Control {
+    rpc setMorter (Motor) returns (Response) {}
+    rpc setServo (Servo) returns (Response) {}
+}

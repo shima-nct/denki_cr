@@ -1,6 +1,6 @@
 # denki_cr
 
-## [remote-i2c] package について
+## 1. [remote-i2c] package を用いたサンプルについて
 [remote-i2c] は Raspberry Pi の I2C を他の端末から制御することを可能とする python ライブラリパッケージです．
 Raspberry Pi でサーバースクリプトを動かしておけば他の端末から Python スクリプトを用いて Raspberry Pi の I2C を操作できます．
 
@@ -13,8 +13,8 @@ remote-i2c にはアクセス制限などの制御機構はありません．
 
 [remote-i2c]: https://pypi.org/project/remote-i2c/
 
-## [remote-i2c] package のインストール
-### Rasberry Pi OS へのインストール
+### 1.1 [remote-i2c] package のインストール
+#### Rasberry Pi OS, Kali Linux for Raspberry Pi へのインストール
 
 remote-i2c バージョン 0.0.9 にはバグがあるので[このレポジトリ](https://github.com/shima-nct/remote-i2c/tree/fix_lack_of_smbus2_dependency_and_write_word)にある非公式パッケージをインストールします．
 
@@ -23,7 +23,7 @@ remote-i2c のインストール
 sudo pip install https://github.com/shima-nct/remote-i2c/releases/download/v0.0.9_fix_write_word/remote_i2c-0.0.9-py3-none-any.whl
 ```
 
-### Kali Linux へのインストール
+#### Kali Linux へのインストール
 本来は pip コマンドによるインストールで済むはずなのですが，エラーが生じてしまいます．このエラーは Kali Linux のアップデートで回避できます．
 
 Kali Linux のアップデート
@@ -36,9 +36,9 @@ remote-i2c のインストール
 sudo pip install remote-i2c smbus2
 ```
 
-## サンプルスクリプト
+### 1.2 サンプルスクリプト
 
-### `remote_i2c_server.py`
+#### `remote_i2c_server.py`
 remote-i2c のドキュメントでも説明されているようにこのスクリプトを用いなくても以下のコマンでパッケージのデフォルトメソッドを実行することでサーバーとして動きます．
 ```
 python -m remote_i2c
@@ -49,7 +49,7 @@ python -m remote_i2c
 python remote_i2c_server.py
 ```
 
-### `remote_i2c_client.py`
+#### `remote_i2c_client.py`
 remote-i2c のドキュメントに掲載してあるサンプルだとうまく動きません．これはスクリプト内で用いられているメソッド `bus.write_byte_data(addr, reg, value)` がSMBus用だからです．`remote_i2c_client.py` ではI2C用の書き込みメソッドは `bus.write_byte(addr, value)` を用いています．
 
 サーバーの IP アドレスを変数 `remote_i2c_host` に与えてください．コードを直接書き換えるか，コマンドラインオプション `--remote-host` で与えてください．以下の例はサーバーのIPアドレスが`10.1.109.123`の場合です．
@@ -71,7 +71,7 @@ python remote_i2c_client.py --remote-host 10.1.109.123
 while : ; do python remote_i2c_client.py --remote-host 10.1.109.123 ; done
 ```
 
-### `ex_pca9685_control.py`
+#### `ex_pca9685_control.py`
 サーボモータの回転角度は指令パルスのデューティ比で制御します．
 サーボモーター[ASV-15-A]におけるパルス信号の仕様はリンク先の商品情報で確認してください．
 
@@ -90,7 +90,7 @@ python ex_pca9685_control.py --remote-host 10.1.109.123
 [PCA9685のデータシート]: https://www.nxp.com/docs/en/data-sheet/PCA9685.pdf
 [ASV-15-A]: http://www.robotsfx.com/robot/ASV-15.html
 
-### `ex_button_read.py`
+#### `ex_button_read.py`
 Qwiic Buttonの押された瞬間，離した瞬間を表示します．
 
 スクリプトを実行する方法
@@ -103,7 +103,20 @@ Raspberry Piの`/boot/config.txt`  の最後に以下の一行を加えて再起
 dtparam=i2c_baudrate=50000
 ```
 
-### `remote_auto_phat_server.py`
+## 2. SparkFun Qwiic Package を利用したサンプルについて
+
+Sparkfun が販売しているQwiicデバイスを制御するためにPythonのパッケージが用意されています．
+以下に掲載したサンプルスクリプトの内，Raspberry Piで動かすサーバースクリプトはこのパッケージを用いてAuto pHATを制御しています．
+
+### 2.1 [SparkFun Qwiic Python package] のインストール
+
+```
+sudo pip3 install sparkfun-qwiic
+```
+
+### 2.2 サンプルスクリプト
+
+#### `remote_auto_phat_server.py`
 
 Auto pHAT のモータードライバーをリモートからコントロールするためのサーバースクリプトです．
 [SparkFun Qwiic Python package]が必要です．
@@ -116,7 +129,7 @@ Socketを用いて作成した単純なTCP/IPサーバーです．
 python remote_auto_phat_server.py --port 3354
 ```
 
-### `remote_auto_phat_client.py`
+#### `remote_auto_phat_client.py`
 
 Auto pHAT のモータードライバーをリモートからコントロールします．
 [Auto pHATのデモスクリプト]の様にモーターの速度を20-255の間で上下させています．
@@ -130,7 +143,7 @@ python remote_auto_phat_client.py --remote-host 10.1.101.12  --remote-port 3354
 [Auto pHATのデモスクリプト]: https://learn.sparkfun.com/tutorials/sparkfun-auto-phat-hookup-guide/all#python-package-examples
 [JSON]: https://ja.wikipedia.org/wiki/JavaScript_Object_Notation
 
-## 各デバイスのI2Cアドレス
+## 3. 各デバイスのI2Cアドレス
 
 * Qwiic Quad Relay (pseudo device consists of ATtiny84): 0x6d
 * Qwiic Button: 0x6f
@@ -139,7 +152,7 @@ python remote_auto_phat_client.py --remote-host 10.1.101.12  --remote-port 3354
 * Auto pHAT Encoder Reader (pseudo device consists of ATtiny84): 0x73
 * Auto pHAT 9-DoF IMU (ICM20948): 0x69
 
-## 各デバイスのI2Cアドレスの求め方
+### 3.1 各デバイスのI2Cアドレスの求め方
 デバイスのアドレスは，デバイスを接続した場合と切り離した場合で `i2cdetect` を使ってアドレス一覧を調べることで見つけることができます．
 
 以下の例ではQwiic Buttonを切り離した場合（上）と接続した場合（下）で `i2cdetect` を実行しています．ここで `1` はRaspberry Piが持つ二つのI2Cバス(1と2)の内，バス1を指定しています． `-y` オプションはスキャン実行確認の問い合わせを抑止しています．
@@ -167,7 +180,7 @@ pi@raspberrypi:~ $ sudo i2cdetect -y 1
 pi@raspberrypi:~ $
 ```
 
-## Raspberry Piでコマンドを用いて書き込み，読み込みを行う方法
+### 3.2 Raspberry Piでコマンドを用いて書き込み，読み込みを行う方法
 Raspberry Pi OSのコマンド `i2cset` と `i2cget` を用いることで Python スクリプトなどを用いずともI2Cバスにデータを送ること、読み取ることができます．
 書き込みの例（Qwiic Quad Relay の全リレーを ON にする）
 ```

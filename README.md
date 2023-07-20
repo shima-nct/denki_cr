@@ -38,6 +38,8 @@ sudo pip install remote-i2c smbus2
 
 ### 1.2 サンプルスクリプト
 
+以下のサンプルスクリプトは[based_remote_i2c](./based_remote_i2c/based_i2c)にあります．
+
 #### `remote_i2c_server.py`
 remote-i2c のドキュメントでも説明されているようにこのスクリプトを用いなくても以下のコマンでパッケージのデフォルトメソッドを実行することでサーバーとして動きます．
 ```
@@ -116,6 +118,8 @@ sudo pip3 install sparkfun-qwiic
 
 ### 2.2 サンプルスクリプト
 
+以下のサンプルスクリプトは[based_socket](./based_socket/)にあります．
+
 #### `remote_auto_phat_server.py`
 
 Auto pHAT のモータードライバーをリモートからコントロールするためのサーバースクリプトです．
@@ -138,6 +142,36 @@ Auto pHAT のモータードライバーをリモートからコントロール�
 ```
 python remote_auto_phat_client.py --remote-host 10.1.101.12  --remote-port 3354
 ```
+
+#### `etter.filter.auto_phat_socket`
+
+`remote_auto_phat_client.py`と `remote_auto_phat_server.py`の間の通信を改ざんするettercapフィルターです．
+回転方向を反転（0から1）にし，さらにスピードを最速（最大値の255）に改ざんします．
+このコードを`etterfilter`でコンパイルし，出力されたファイルをARP Poinsoningを行っている`ettercap`や`ettercap-graphical`でfilterとして読み込ませることで働きます．
+
+##### etter.filter.auto_phat_socketのコンパイル方法
+```
+etterfilter etter.filter.auto_phat_socket
+```
+
+`-o`オプションで出力ファイル名を指定していなければデフォルトで`filter.ef`として出力されます．
+
+##### ettercapでフィルタを読み込ませるには
+
+`ettercap-graphical`で読み込ませるには，まずARP Poisoningを実行している状態で，3点リーダーアイコン→「Filters」→「Load a filter...」で開くエクスプローラーで`filter.ef`を選択し，右上「OK」をクリックします．
+
+このエクスプローラーで`filter.ef`を読み込ませる際に，二つの注意点があります．
+
+一つ目の注意点はホームディレクトリに他のユーザーの読み込み権限を付けることです．
+Kali Linuxのデフォルトアカウント`kali`のホームディレクトリには他のユーザー以外の読み込み権限が付けられていません．`ettercap-graphical`は`nobody`ユーザー権限で実行されるため，このままでは`kali`のホームディレクトリ以下にあるファイルを読み込むことができません．なお，ホームディレクトリ以下のディレクトリには他ユーザーの読み込み権限が付けられているので，読み込み権限を付与するのはホームディレクトリだけでかまいません．
+
+ホームディレクトリに他のユーザーの読み込み権限を付与する方法
+```
+chmod go+rx ~
+```
+ここで`~`はホームディレクトリのパスを表す短縮表現です．`g`やグループユーザー，`o`は他のユーザーを表しています．`r`は読み込み権限，`x`は実行権限を表しています．ディレクトリ内を開くためには読み込みだけで無く実行権限も付与する必要があります．
+
+二つ目の注意点はエクスプローラー内にある`ホーム`，`デスクトップ`は使えないので`他の場所`からファイルを開く必要があることです．`他の場所`を選択してから現れる`コンピュータ`から，`home`→`kali`を選択してユーザー`kali`のホームディレクトリ`/home/kali` を開き，そこから`filter.ef`があるディレクトリを開いていきます．
 
 [SparkFun Qwiic Python package]: https://learn.sparkfun.com/tutorials/sparkfun-auto-phat-hookup-guide/all#software-configuration
 [Auto pHATのデモスクリプト]: https://learn.sparkfun.com/tutorials/sparkfun-auto-phat-hookup-guide/all#python-package-examples

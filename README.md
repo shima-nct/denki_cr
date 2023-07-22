@@ -1,7 +1,7 @@
 # denki_cr
 
-## 1. [remote-i2c] package を用いたサンプルについて
-[remote-i2c] は Raspberry Pi の I2C を他の端末から制御することを可能とする python ライブラリパッケージです．
+## [remote-i2c] package について
+[remote-i2c]（[ソースコード](https://gitlab.com/vectoridau/remote-i2c/)） は Raspberry Pi の I2C を他の端末から制御することを可能とする python ライブラリパッケージです．
 Raspberry Pi でサーバースクリプトを動かしておけば他の端末から Python スクリプトを用いて Raspberry Pi の I2C を操作できます．
 
 remote-i2c のプロトコルは TCP を用いています．デフォルトの待受ポートは 5446 です。アドレスとデータをそのままバイナリのバイト列で送る至極簡単なプロトコルです。サーバーは受け取ったアドレス，データを I2C バスに送ります．

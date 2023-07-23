@@ -21,7 +21,7 @@ bus.connect()
 
 # Perform I2C operations
 # Qwiic Quad Relayのアドレス 0x6d 
-# Qwiic Buttonのアドレス　
+# Qwiic Buttonのアドレス 0x6f
 addr = 0x6d
 on_value = 0x0b     # All on
 off_value = 0x0a    # All off

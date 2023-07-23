@@ -81,7 +81,7 @@ def main():
         # RPC ハンドラが終了するまでこのメソッドはブロ
         # ックされます．
         # https://grpc.github.io/grpc/python/grpc.html
-
+        print("Interrupted by user, shutting down.")
 
 if __name__ == '__main__':
     main()

@@ -19,14 +19,16 @@ def main():
                 req = auto_phat_pb2.Motor(motor=motor,dir=0,speed=speed)
                 response = stub.setMorter(req)
 
-        while True:
-            for speed in range(20,256):
-                motor_drive(speed)
-                time.sleep(0.01)
-            for speed in range(254,19,-1):
-                motor_drive(speed)
-                time.sleep(0.01)
-
+        try:
+            while True:
+                for speed in range(20,256):
+                    motor_drive(speed)
+                    time.sleep(0.01)
+                for speed in range(254,19,-1):
+                    motor_drive(speed)
+                    time.sleep(0.01)
+        except KeyboardInterrupt:
+            print("Interrupted by user, shutting down.")
 
 if __name__ == '__main__':
     main()

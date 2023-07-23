@@ -1,0 +1,24 @@
+if (ip.proto == TCP) {
+   # 待ち受けポート3354 のサーバーへの送信の場合
+   if (tcp.dst == 3354) {
+      if (DATA.data + 0x2b == "\x02\x18") {
+         msg("Found Speed Field, 02 18 00\n");
+         DATA.data + 0x2d = "\x00";
+      }
+      if (DATA.data + 0x2b == "\x04" 
+            && DATA.data + 0x2e == "\x18") {
+         msg("Found Speed Field, 04 xx xx 18 00\n");
+         DATA.data + 0x2f = "\x00";
+      }
+      if (DATA.data + 0x2b == "\x03\x18") {
+         msg("Found Speed Field, 03 18 ff 01\n");
+         DATA.data + 0x2d = "\xff";
+      }
+      if (DATA.data + 0x2b == "\x05" 
+            && DATA.data + 0x2e == "\x18" 
+            && DATA.data + 0x30 == "\x01") {
+         msg("Found Speed Field, 05 xx xx 18 ff 01\n");
+         DATA.data + 0x2f = "\xff";
+      }
+   }
+}

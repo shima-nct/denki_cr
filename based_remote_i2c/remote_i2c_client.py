@@ -17,7 +17,6 @@ args = parser.parse_args()
 remote_i2c_host = args.remote_host
 remote_port = args.remote_port
 bus = RemoteI2CClient(remote_i2c_host, remote_port)
-bus.connect()
 
 # Perform I2C operations
 # Qwiic Quad Relayのアドレス 0x6d 
@@ -36,11 +35,12 @@ off_value = 0x0a    # All off
 
 #ret = bus.read_byte_data(addr)
 
+bus.connect()
 bus.write_byte(addr, on_value)
-time.sleep(1)
-
-bus.write_byte(addr, off_value)
-time.sleep(1)
-
-# Disconnect when you're done, if you feel the need
 bus.disconnect()
+time.sleep(1)
+
+bus.connect()
+bus.write_byte(addr, off_value)
+bus.disconnect()
+time.sleep(1)

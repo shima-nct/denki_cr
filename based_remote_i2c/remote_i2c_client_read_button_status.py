@@ -17,7 +17,6 @@ args = parser.parse_args()
 remote_i2c_host = args.remote_host
 remote_port = args.remote_port
 bus = RemoteI2CClient(remote_i2c_host, remote_port)
-bus.connect()
 
 # Perform I2C operations
 # Qwiic Quad Relayのアドレス 0x6d
@@ -35,15 +34,18 @@ def clear_status():
     """
     Qwiic Buttionのステータスレジスタをクリアします．
     """
+    bus.connect()
     bus.write_byte_data(addr, button_status_reg, 0)
-
+    bus.disconnect()
 
 def get_button_status():
     """
     Qwiic Buttionのステータスレジスタの値を取得して，
     その値とボタンがクリックされたか等の値を返します．
     """
+    bus.connect()
     value = bus.read_byte_data(addr, button_status_reg)
+    bus.disconnect()
     # 0桁目 イベントが起こったなら1，なければ0
     # 1桁目 クリックされたなら1, なければ0
     # 2桁目 ステータスを取得した際に押されていたなら1，無ければ0
@@ -56,14 +58,18 @@ def get_led_brightness():
     """
     Qwiic ButtionのLED（LEDが付いているならば）の明るさ（0-255）の値を取得します．
     """
-    return bus.read_byte_data(addr, led_brightness_reg)
+    bus.connect()
+    value = bus.read_byte_data(addr, led_brightness_reg)
+    bus.disconnect()
+    return value
 
 def set_led_brightness(value):
     """
     Qwiic ButtionのLED（LEDが付いているならば）の明るさ（0-255）を設定します．
     """
+    bus.connect()
     bus.write_byte_data(addr, led_brightness_reg, value)
-
+    bus.disconnect()
 
 clear_status()
 set_led_brightness(0)
@@ -89,9 +95,6 @@ while True:
 
     except KeyboardInterrupt as e:
         break
-    
+
 clear_status()
-print("Close connection")
-# Disconnect when you're done, if you feel the need
-bus.disconnect()
 

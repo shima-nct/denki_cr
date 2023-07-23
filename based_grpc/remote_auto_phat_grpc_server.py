@@ -1,4 +1,4 @@
-
+import threading
 import time
 import qwiic_scmd
 import argparse
@@ -33,9 +33,31 @@ time.sleep(.250)
 
 
 class Control(auto_phat_pb2_grpc.ControlServicer):
+
+    watchdog_timer_duration = 1.0
+
+    def __init__(self):
+        # ウォッチドックタイマー用に現在の時刻を記録
+        self.last_called = time.time()
+        # ウォッチドックタイマーのセットアップ
+        self.watchdog_timer = threading.Timer(
+            self.watchdog_timer_duration, self.watchdog_check)
+        self.watchdog_timer.start()
+
     def setMorter(self, request, context):
+        self.last_called = time.time()  # 呼び出された時刻に更新
         myMotor.set_drive(request.motor, request.dir, request.speed)
         return auto_phat_pb2.Response(error=False)
+
+    def watchdog_check(self):
+        # setMoter()を呼び出してから5秒を越えていたらモーターを停止
+        if time.time() - self.last_called > self.watchdog_timer_duration:
+            stop_all_motors()
+
+        # ウォッチドックタイマーをリセット
+        self.watchdog_timer = threading.Timer(
+            self.watchdog_timer_duration, self.watchdog_check)
+        self.watchdog_timer.start()
 
 
 def main():
@@ -45,10 +67,20 @@ def main():
     args = parser.parse_args()
 
     server = grpc.server(ThreadPoolExecutor(max_workers=2))
-    auto_phat_pb2_grpc.add_ControlServicer_to_server(Control(), server)
+    control = Control()
+    auto_phat_pb2_grpc.add_ControlServicer_to_server(control, server)
     server.add_insecure_port('[::]:{}'.format(args.port))
     server.start()
-    server.wait_for_termination()
+    try:
+        server.wait_for_termination()
+    except KeyboardInterrupt:   # Ctrl+Cを押されたら終了
+        control.watchdog_timer.cancel()
+        stop_all_motors()
+        server.stop(None)   # 猶予期間が指定されていない場合 (None を渡す)，
+        # 既存のすべての RPC は直ちに中止され、最後の
+        # RPC ハンドラが終了するまでこのメソッドはブロ
+        # ックされます．
+        # https://grpc.github.io/grpc/python/grpc.html
 
 
 if __name__ == '__main__':
